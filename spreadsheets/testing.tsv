@@ -1,0 +1,11 @@
+						
+						
+						
+						
+						
+		HEADER ONE	HEADER TWO		ANOTHER CAPTION	
+						
+	lefty-loosey	one	two	gap	caption	righty-tighty
+						
+						
+		Huh. I guess there's no way to enter an actual HT or LF in here.	That's a good thing.		Is there a limit to the size of text in one of these fields? I guess I don't really care, but it might be helpful to have some kind of sanity limit in the parser. 255 bytes or something like that. I know it does support UTF-8 text, so we're talking in bytes and not characters. OK. Yeah. I think that was more than 256.	
