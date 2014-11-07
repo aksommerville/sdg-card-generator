@@ -10,10 +10,10 @@
 
 save_hint medium
 
-load "spreadsheets/tsv.tsv"
-background "spreadsheets/bg.png"
+load "tsv.tsv"
+background "bg.png"
 
-image "spreadsheets/Equipment/{Name}.png" 250 74 240 320
+image "Equipment/{Name}.png" 250 74 240 320
 
 font "/opt/X11/share/fonts/TTF/VeraBd.ttf" 48
 defaultcolor ffffff
@@ -24,4 +24,4 @@ label "Needed to Complete" 240 100 RIGHT 000000
 label "Scrap Value" 240 125 RIGHT 000000
 text "Extra Text" 10 394 480 406 808080
 
-save "output"
+save "../output"

@@ -31,6 +31,6 @@ $(EXE):$(OFILES);$(PRECMD) $(LD) -o $@ $^ $(LDPOST)
 
 #------------------------------------------------------------------------------
 
-test:$(EXE);rm -rf output && $(EXE) && open -a /Applications/Preview.app output
+test:$(EXE);rm -rf output && $(EXE) spreadsheets/script && open -a /Applications/Preview.app output
 
 clean:;rm -rf mid out
