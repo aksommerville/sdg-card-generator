@@ -279,10 +279,17 @@ int imgtl_deck_begin_rendering() {
  
 int imgtl_deck_add_label(int fieldid,int x,int y,int align,uint32_t rgba) {
   if ((fieldid<0)||(fieldid>=imgtl_deck.headerc)) return -1;
+  int colorfield=-1;
+  if ((rgba&0x00ffffff)==0x00fe0100) colorfield=(rgba>>24)&0xff;
   int i; for (i=0;i<imgtl_deck.cardc;i++) {
     struct imgtl_card *card=imgtl_deck.cardv+i;
     if (fieldid>=card->valuec) continue;
     if (card->valuev[fieldid].c<1) continue;
+    if (colorfield>=0) {
+      if (colorfield<card->valuec) {
+        imgtl_rgba_eval((int*)&rgba,card->valuev[colorfield].v,card->valuev[colorfield].c);
+      }
+    }
     if (imgtl_draw_text(card->image,x,y,align,card->valuev[fieldid].v,card->valuev[fieldid].c,rgba)<0) return -1;
   }
   return 0;
@@ -296,10 +303,17 @@ int imgtl_deck_add_text(int fieldid,int x,int y,int w,int h,uint32_t rgba) {
   //TODO Margins?
   x+=5; w-=10;
   y+=5; h-=10;
+  int colorfield=-1;
+  if ((rgba&0x00ffffff)==0x00fe0100) colorfield=(rgba>>24)&0xff;
   int i; for (i=0;i<imgtl_deck.cardc;i++) {
     struct imgtl_card *card=imgtl_deck.cardv+i;
     if (fieldid>=card->valuec) continue;
     if (card->valuev[fieldid].c<1) continue;
+    if (colorfield>=0) {
+      if (colorfield<card->valuec) {
+        imgtl_rgba_eval((int*)&rgba,card->valuev[colorfield].v,card->valuev[colorfield].c);
+      }
+    }
     if (imgtl_draw_multiline_text(card->image,x,y,w,h,card->valuev[fieldid].v,card->valuev[fieldid].c,rgba)<0) return -1;
   }
   return 0;
