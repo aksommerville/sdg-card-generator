@@ -83,7 +83,7 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
     }
 
   #define COLORARG(tokenp) \
-    if (tokenp>=tokenc) return -1; \
+    SARG(tokenp) \
     if (imgtl_rgba_eval(&tokenv[tokenp].n,tokenv[tokenp].v,tokenv[tokenp].c)<0) { \
       if ((tokenv[tokenp].n=imgtl_deck_lookup_field(tokenv[tokenp].v,tokenv[tokenp].c))>=0) { \
         tokenv[tokenp].n=0x00fe0100|(tokenv[tokenp].n<<24); \
@@ -145,6 +145,16 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
       fprintf(stderr,"%s:%d:ERROR: Failed to begin card rendering. (Likely out of memory, reduce size or count of cards).\n",refname,lineno);
       return -2;
     }
+    return 0;
+  }
+
+  CMD("defaultcolor",1) {
+    COLORARG(1)
+    if ((tokenv[1].n&0x00ffffff)==0x00fe0100) {
+      fprintf(stderr,"%s:%d:ERROR: The default color can't be a field; that defeats the purpose of a default!.\n",refname,lineno);
+      return -2;
+    }
+    imgtl_deck_default_color(tokenv[1].n);
     return 0;
   }
   

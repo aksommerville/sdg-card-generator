@@ -46,12 +46,17 @@ int imgtl_deck_lookup_field(const char *name,int namec);
  */
 int imgtl_deck_begin_rendering();
 
+// Set the fallback color for calls that try to pull it from card fields, when they fail.
+int imgtl_deck_default_color(uint32_t rgba);
+
 /* Render field content as text on each card.
  * Output is centered at (x,y), of color (rgba).
+ * If ((rgba&0x00ffffff)==0x00fe0100), its high byte is the field ID containing actual color for each card.
  */
 int imgtl_deck_add_label(int fieldid,int x,int y,int align,uint32_t rgba);
 
 /* Break lines and everything.
+ * If ((rgba&0x00ffffff)==0x00fe0100), its high byte is the field ID containing actual color for each card.
  */
 int imgtl_deck_add_text(int fieldid,int x,int y,int w,int h,uint32_t rgba);
 

@@ -1,8 +1,8 @@
-Type	Name	Needed to Complete	Scrap Value	Extra Text	Quantity
+Type	Name	Needed to Complete	Scrap Value	Extra Text	Quantity	Title Color
 Equipment	Sensor Array	Sensor Activation	µµ	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.	1
-Equipment	EVA Suit	Exterior Repairs	µ∆		1
-Equipment	Gravity Spanner	Calibrate Engine	µΩ		1
-Equipment	Distress Beacon	Mayday Signal	µ≈		1
+Equipment	EVA Suit	Exterior Repairs	µ∆		1	blue
+Equipment	Gravity Spanner	Calibrate Engine	µΩ		1	green
+Equipment	Distress Beacon	Mayday Signal	µ≈		1	ffffff80
 Equipment	Shift Activation		W	Required for Shift Sequence	1
 Equipment	Dark Gravity Pulse Unit	Restart Gravity Reacton	∆µ		1
 Equipment	Gravity Plating	Mass Attenuation	∆∆		1

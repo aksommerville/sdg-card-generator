@@ -2,6 +2,7 @@
 # font PATH SIZE
 # load PATH
 # background PATH
+# defaultcolor COLOR
 # label FIELD X Y ALIGN COLOR
 # text FIELD X Y W H COLOR
 # image PATH X Y W H
@@ -15,7 +16,8 @@ background "spreadsheets/bg.png"
 image "spreadsheets/Equipment/{Name}.png" 250 74 240 320
 
 font "/opt/X11/share/fonts/TTF/VeraBd.ttf" 48
-label "Name" 250 57 CENTER ffffff
+defaultcolor ffffff
+label "Name" 250 57 CENTER "Title Color"
 
 font "/opt/X11/share/fonts/TTF/Vera.ttf" 24
 label "Needed to Complete" 240 100 RIGHT 000000

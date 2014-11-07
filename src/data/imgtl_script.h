@@ -29,11 +29,17 @@
  *     Load PNG file for each card's background (front face).
  *     This must come before any rendering commands.
  *
+ *   defaultcolor COLOR
+ *     imgtl_deck_default_color()
+ *     Set default color for 'label' and 'text', if they are pulling the color from a field.
+ *
  *   label FIELD X Y ALIGN COLOR
  *     imgtl_deck_add_label()
  *     Put text on each card, drawing content from the named field.
  *     Y is the vertical baseline of text.
  *     X is the left, middle, or right, depending on ALIGN.
+ *     COLOR is hexadecimal "RRGGBB" or "RRGGBBAA", or one of a few common names ("red", "white", etc).
+ *     COLOR may also be a field name, in which case its content contains the actual color.
  *
  *   text FIELD X Y W H COLOR
  *     imgtl_deck_add_text()

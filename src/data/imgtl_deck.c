@@ -27,6 +27,7 @@ static struct {
   struct imgtl_header *headerv; int headerc,headera;
   struct imgtl_card *cardv; int cardc,carda;
   struct imgtl_image *bgimg;
+  uint32_t defaultcolor;
 } imgtl_deck={0};
 
 /* Minor types.
@@ -179,6 +180,7 @@ int imgtl_deck_load(const char *path) {
   int srcc=imgtl_file_read(&src,path);
   if ((srcc<0)||!src) return -1;
   imgtl_deck_unload();
+  imgtl_deck.defaultcolor=0x000000ff;
   if (imgtl_deck_read_tsv(src,srcc,path)<0) { free(src); return -1; }
   free(src);
   return 0;
@@ -206,6 +208,11 @@ int imgtl_deck_count_cards() {
 
 int imgtl_deck_count_fields() {
   return imgtl_deck.headerc;
+}
+
+int imgtl_deck_default_color(uint32_t rgba) {
+  imgtl_deck.defaultcolor=rgba;
+  return 0;
 }
 
 /* Get field by index.
@@ -286,6 +293,7 @@ int imgtl_deck_add_label(int fieldid,int x,int y,int align,uint32_t rgba) {
     if (fieldid>=card->valuec) continue;
     if (card->valuev[fieldid].c<1) continue;
     if (colorfield>=0) {
+      rgba=imgtl_deck.defaultcolor;
       if (colorfield<card->valuec) {
         imgtl_rgba_eval((int*)&rgba,card->valuev[colorfield].v,card->valuev[colorfield].c);
       }
@@ -310,6 +318,7 @@ int imgtl_deck_add_text(int fieldid,int x,int y,int w,int h,uint32_t rgba) {
     if (fieldid>=card->valuec) continue;
     if (card->valuev[fieldid].c<1) continue;
     if (colorfield>=0) {
+      rgba=imgtl_deck.defaultcolor;
       if (colorfield<card->valuec) {
         imgtl_rgba_eval((int*)&rgba,card->valuev[colorfield].v,card->valuev[colorfield].c);
       }
