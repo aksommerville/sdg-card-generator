@@ -2,6 +2,7 @@
 #include "imgtl_draw.h"
 #include "image/imgtl_image.h"
 #include "misc/imgtl_text.h"
+#include <dirent.h>
 #include "ft2build.h"
 #include FT_FREETYPE_H
 
@@ -98,11 +99,70 @@ void imgtl_text_quit() {
   memset(&imgtl_text,0,sizeof(imgtl_text));
 }
 
+/* Search a few well-known locations for fonts by short name.
+ * Short name does not contain any dot or slash.
+ */
+
+static int imgtl_text_search_font_1(char *dst,int dsta,const char *pfx,const char *name,int namec) {
+  DIR *dir=opendir(pfx);
+  if (!dir) return -1;
+  struct dirent *de;
+  while (de=readdir(dir)) {
+    if (imgtl_memcasecmp(de->d_name,name,namec)) continue;
+    if (de->d_name[namec]!='.') continue;
+    const char *sfx=de->d_name+namec+1;
+    int sfxc=0; while (sfx[sfxc]) sfxc++;
+    // OK font formats: ttf pfa ttc otf
+    if ((sfxc==3)&&(
+      !imgtl_memcasecmp(sfx,"ttf",3)||
+      !imgtl_memcasecmp(sfx,"pfa",3)||
+      !imgtl_memcasecmp(sfx,"ttc",3)||
+      !imgtl_memcasecmp(sfx,"otf",3)
+    )) {
+      int basec=namec+1+sfxc;
+      int pfxc=0; while (pfx[pfxc]) pfxc++;
+      int dstc=pfxc+basec;
+      if (dstc<=dsta) {
+        memcpy(dst,pfx,pfxc);
+        memcpy(dst+pfxc,de->d_name,basec);
+        if (dstc<dsta) dst[dstc]=0;
+      }
+      return dstc;
+    }
+  }
+  closedir(dir);
+  return -1;
+}
+
+static int imgtl_text_search_font(char *dst,int dsta,const char *src,int srcc) {
+  if (!dst||(dsta<1)||!src||(srcc<1)) return -1;
+
+  const char *pfxv[]={ // List must end with a NULL. Each entry must begin and end with slash.
+    "/Library/Fonts/",
+    "/opt/X11/share/fonts/Type1/",
+    "/opt/X11/share/fonts/TTF/",
+  0};
+  int i; for (i=0;pfxv[i];i++) {
+    int dstc=imgtl_text_search_font_1(dst,dsta,pfxv[i],src,srcc);
+    if (dstc>=0) return dstc;
+  }
+  
+  return -1;
+}
+
 /* Setup.
  */
  
 int imgtl_text_setup(const char *path,int size) {
   if (!path||(size<1)) return -1;
+
+  char subpath[1024];
+  int isshortname=1,i; for (i=0;path[i];i++) if ((path[i]=='.')||(path[i]=='/')) { isshortname=0; break; }
+  if (isshortname) {
+    int subpathc=imgtl_text_search_font(subpath,sizeof(subpath),path,i);
+    if ((subpathc>0)&&(subpathc<sizeof(subpath))) path=subpath;
+  }
+  
   if (imgtl_text.path&&!strcmp(path,imgtl_text.path)&&(size==imgtl_text.size)) return 0;
   if (imgtl_text_init()<0) return -1;
   if (imgtl_text.face) { FT_Done_Face(imgtl_text.face); imgtl_text.face=0; }

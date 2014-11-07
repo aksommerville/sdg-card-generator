@@ -64,6 +64,6 @@ int main(int argc,char **argv,char **envv) {
 
   imgtl_text_quit();
   imgtl_deck_quit();
-  free(wd);
+  if (wd) free(wd);
   return 0;
 }

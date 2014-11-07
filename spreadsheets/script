@@ -15,11 +15,11 @@ background "bg.png"
 
 image "Equipment/{Name}.png" 250 74 240 320
 
-font "/opt/X11/share/fonts/TTF/VeraBd.ttf" 48
+font "Papyrus" 48
 defaultcolor ffffff
 label "Name" 250 57 CENTER "Title Color"
 
-font "/opt/X11/share/fonts/TTF/Vera.ttf" 24
+font "Vera" 24
 label "Needed to Complete" 240 100 RIGHT 000000
 label "Scrap Value" 240 125 RIGHT 000000
 text "Extra Text" 10 394 480 406 808080
