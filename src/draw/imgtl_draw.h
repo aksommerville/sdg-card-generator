@@ -61,6 +61,12 @@ int imgtl_draw_text(struct imgtl_image *image,int x,int y,int align,const char *
  */
 struct imgtl_image *imgtl_text_get_glyph(int *dx,int *dy,int *advance,int ch);
 
+/* Transform the glyph image and also transform its metrics.
+ * Returns a STRONG reference, caller must free it.
+ * Transformed glyphs are not cached anywhere.
+ */
+struct imgtl_image *imgtl_text_get_transformed_glyph(int *dx,int *dy,int *advancex,int *advancey,int ch,int xform);
+
 /* Measure a row of text with the current font.
  * Returns total height, ie (ascent+descent).
  * There are no line breaks or anything; it's always one row.
@@ -72,5 +78,7 @@ int imgtl_measure_text(int *w,int *ascent,int *descent,const char *src,int srcc)
  * Leading space is stripped from every line. (TODO Will we ever want indentation?)
  */
 int imgtl_draw_multiline_text(struct imgtl_image *image,int x,int y,int w,int h,const char *src,int srcc,uint32_t rgba);
+
+int imgtl_draw_rotated_text(struct imgtl_image *image,int x,int y,int align,const char *src,int srcc,uint32_t rgba,int rotation);
 
 #endif

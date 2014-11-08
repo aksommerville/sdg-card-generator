@@ -293,6 +293,55 @@ struct imgtl_image *imgtl_text_get_glyph(int *dx,int *dy,int *advance,int ch) {
   return glyph->image;
 }
 
+/* Get transformed glyph.
+ */
+ 
+struct imgtl_image *imgtl_text_get_transformed_glyph(int *dx,int *dy,int *advancex,int *advancey,int ch,int xform) {
+
+  int p=imgtl_glyph_search(ch);
+  if (p<0) {
+    if (!imgtl_text_get_glyph(0,0,0,ch)) return 0;
+    p=-p-1;
+  }
+  struct imgtl_glyph *glyph=imgtl_text.glyphv+p;
+  
+  struct imgtl_image *dst=imgtl_xform(glyph->image,xform);
+  if (!dst) return 0;
+  if (advancex) *advancex=0;
+  if (advancey) *advancey=0;
+
+  switch (xform) {
+
+    case IMGTL_XFORM_NONE: {
+        if (dx) *dx=glyph->dx;
+        if (dy) *dy=glyph->dy;
+        if (advancex) *advancex=glyph->advance;
+      } break;
+
+    case IMGTL_XFORM_CLOCK: {
+        if (dx) *dx=glyph->dy-dst->w;
+        if (dy) *dy=-glyph->dx;
+        if (advancey) *advancey=glyph->advance;
+      } break;
+
+    case IMGTL_XFORM_180: {
+        if (dx) *dx=-glyph->dx;
+        if (dy) *dy=dst->h-glyph->dy;
+        if (advancex) *advancex=-glyph->advance;
+      } break;
+
+    case IMGTL_XFORM_COUNTER: {
+        if (dx) *dx=-glyph->dy;
+        if (dy) *dy=dst->h+glyph->dx;
+        if (advancey) *advancey=-glyph->advance;
+      } break;
+
+    // The four flop-and-rotate transforms are not implemented. They're unlikely to be useful.
+    default: imgtl_image_del(dst); return 0;
+  }
+  return dst;
+}
+
 /* Draw multiline text.
  */
  
@@ -357,6 +406,59 @@ int imgtl_draw_multiline_text(struct imgtl_image *image,int x,int y,int w,int h,
     }
 
     py+=imgtl_text.size;
+  }
+  return 0;
+}
+
+/* Draw rotated text.
+ */
+ 
+int imgtl_draw_rotated_text(struct imgtl_image *image,int x,int y,int align,const char *src,int srcc,uint32_t rgba,int rotation) {
+  if (!image) return -1;
+  if (!imgtl_text.face) {
+    fprintf(stderr,"imgtl:Error: Requested to draw text but no font set.\n");
+    return -1;
+  }
+  if (!(rgba&0xff)) return 0;
+  if (!src) return 0;
+  if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
+  if (!srcc) return 0;
+
+  int xform;
+  rotation%=360; if (rotation<0) rotation+=360;
+  switch (rotation) {
+    case 0: xform=IMGTL_XFORM_NONE; break;
+    case 90: xform=IMGTL_XFORM_CLOCK; break;
+    case 180: xform=IMGTL_XFORM_180; break;
+    case 270: xform=IMGTL_XFORM_COUNTER; break;
+    default: return -1;
+  }
+
+  if (align>=0) {
+    int w;
+    if (imgtl_measure_text(&w,0,0,src,srcc)<0) return -1;
+    if (!align) w>>=1;
+    switch (rotation) {
+      case   0: x-=w; break;
+      case  90: y-=w; break;
+      case 180: x+=w; break;
+      case 270: y+=w; break;
+    }
+  }
+
+  int srcp=0,ch,seqlen; while (srcp<srcc) {
+    if ((seqlen=imgtl_utf8_decode(&ch,src+srcp,srcc-srcp))<1) { seqlen=1; ch='?'; }
+    srcp+=seqlen;
+    int dx,dy,advancex,advancey;
+    struct imgtl_image *glyph=imgtl_text_get_transformed_glyph(&dx,&dy,&advancex,&advancey,ch,xform);
+    if (!glyph) continue;
+    if (imgtl_draw_a8(image,x+dx,y-dy,glyph->pixels,glyph->stride,glyph->w,glyph->h,rgba)<0) {
+      imgtl_image_del(glyph);
+      return -1;
+    }
+    imgtl_image_del(glyph);
+    x+=advancex;
+    y+=advancey;
   }
   return 0;
 }

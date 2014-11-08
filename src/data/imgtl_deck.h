@@ -54,6 +54,7 @@ int imgtl_deck_default_color(uint32_t rgba);
  * If ((rgba&0x00ffffff)==0x00fe0100), its high byte is the field ID containing actual color for each card.
  */
 int imgtl_deck_add_label(int fieldid,int x,int y,int align,uint32_t rgba);
+int imgtl_deck_add_rlabel(int fieldid,int x,int y,int align,int rotation,uint32_t rgba);
 
 /* Break lines and everything.
  * If ((rgba&0x00ffffff)==0x00fe0100), its high byte is the field ID containing actual color for each card.

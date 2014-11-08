@@ -176,6 +176,36 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
     }
     return 0;
   }
+
+  CMD("labelup",5) {
+    SARG(1)
+    IARG(2,0,INT_MAX)
+    IARG(3,0,INT_MAX)
+    ALIGNARG(4)
+    COLORARG(5)
+    int fieldid=imgtl_deck_lookup_field(tokenv[1].v,tokenv[1].c);
+    if (fieldid<0) { fprintf(stderr,"%s:%d:ERROR: Field '%.*s' not found.\n",refname,lineno,tokenv[1].c,tokenv[1].v); return -2; }
+    if (imgtl_deck_add_rlabel(fieldid,tokenv[2].n,tokenv[3].n,tokenv[4].n,270,tokenv[5].n)<0) {
+      fprintf(stderr,"%s:%d:ERROR: Failed to add text.\n",refname,lineno);
+      return -2;
+    }
+    return 0;
+  }
+
+  CMD("labeldown",5) {
+    SARG(1)
+    IARG(2,0,INT_MAX)
+    IARG(3,0,INT_MAX)
+    ALIGNARG(4)
+    COLORARG(5)
+    int fieldid=imgtl_deck_lookup_field(tokenv[1].v,tokenv[1].c);
+    if (fieldid<0) { fprintf(stderr,"%s:%d:ERROR: Field '%.*s' not found.\n",refname,lineno,tokenv[1].c,tokenv[1].v); return -2; }
+    if (imgtl_deck_add_rlabel(fieldid,tokenv[2].n,tokenv[3].n,tokenv[4].n,90,tokenv[5].n)<0) {
+      fprintf(stderr,"%s:%d:ERROR: Failed to add text.\n",refname,lineno);
+      return -2;
+    }
+    return 0;
+  }
   
   CMD("text",6) {
     SARG(1)

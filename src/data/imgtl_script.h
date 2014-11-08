@@ -41,6 +41,11 @@
  *     COLOR is hexadecimal "RRGGBB" or "RRGGBBAA", or one of a few common names ("red", "white", etc).
  *     COLOR may also be a field name, in which case its content contains the actual color.
  *
+ *   labelup FIELD X Y ALIGN COLOR
+ *   labeldown FIELD X Y ALIGN COLOR
+ *     Draw text as with 'label', but rotated 90 degrees clockwise ("down") or counterclockwise ("up").
+ *     (X,Y) is the starting point, and it moves vertically from there.
+ *
  *   text FIELD X Y W H COLOR
  *     imgtl_deck_add_text()
  *     Add multiline text to each card, in the given box.

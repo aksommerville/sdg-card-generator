@@ -4,6 +4,8 @@
 # background PATH
 # defaultcolor COLOR
 # label FIELD X Y ALIGN COLOR
+# labelup FIELD X Y ALIGN COLOR
+# labeldown FIELD X Y ALIGN COLOR
 # text FIELD X Y W H COLOR
 # image PATH X Y W H
 # save PATH
@@ -12,6 +14,9 @@ save_hint medium
 
 load "tsv.tsv"
 background "bg.png"
+
+font "Comic Sans MS Bold" 80
+labelup "Name" 80 400 CENTER ffffff80
 
 image "Equipment/{Name}.png" 250 74 240 320
 

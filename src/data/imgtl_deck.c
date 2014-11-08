@@ -303,6 +303,28 @@ int imgtl_deck_add_label(int fieldid,int x,int y,int align,uint32_t rgba) {
   return 0;
 }
 
+/* Add rotated label.
+ */
+
+int imgtl_deck_add_rlabel(int fieldid,int x,int y,int align,int rotation,uint32_t rgba) {
+  if ((fieldid<0)||(fieldid>=imgtl_deck.headerc)) return -1;
+  int colorfield=-1;
+  if ((rgba&0x00ffffff)==0x00fe0100) colorfield=(rgba>>24)&0xff;
+  int i; for (i=0;i<imgtl_deck.cardc;i++) {
+    struct imgtl_card *card=imgtl_deck.cardv+i;
+    if (fieldid>=card->valuec) continue;
+    if (card->valuev[fieldid].c<1) continue;
+    if (colorfield>=0) {
+      rgba=imgtl_deck.defaultcolor;
+      if (colorfield<card->valuec) {
+        imgtl_rgba_eval((int*)&rgba,card->valuev[colorfield].v,card->valuev[colorfield].c);
+      }
+    }
+    if (imgtl_draw_rotated_text(card->image,x,y,align,card->valuev[fieldid].v,card->valuev[fieldid].c,rgba,rotation)<0) return -1;
+  }
+  return 0;
+}
+
 /* Add multiline text.
  */
  
