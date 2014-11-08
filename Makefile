@@ -9,8 +9,9 @@ CCFT:=$(shell freetype-config --cflags)
 #LDFT:=$(shell freetype-config --libs)
 LDFT:=/opt/local/lib/libfreetype.a
 
+VERSION:=-DIMGTL_VERSION_NUMBER="\"$(shell date +%Y%m%d)\""
 CCWARN:=-Werror -Wimplicit -Wformat -Wno-parentheses -Wno-comment -ferror-limit=1
-CC:=gcc -c -MMD -O2 -Isrc $(CCWARN) $(CCFT)
+CC:=gcc -c -MMD -O2 -Isrc $(CCWARN) $(CCFT) $(VERSION)
 LD:=gcc $(LDFT)
 LDPOST:=-lz -lbz2
 
