@@ -16,10 +16,10 @@ struct imgtl_image;
 #define IMGTL_XFORM_FLIP         6
 #define IMGTL_XFORM_FLOPCOUNTER  7
 
-// Solid rectangle.
+// Solid rectangle. Alpha is not used, it is transferred like a color.
 int imgtl_draw_rect(struct imgtl_image *image,int x,int y,int w,int h,uint32_t rgba);
 
-// Single-pixel line.
+// Single-pixel line. Alpha is not used, it is transferred like a color.
 int imgtl_draw_line(struct imgtl_image *image,int ax,int ay,int bx,int by,uint32_t rgba);
 
 /* Blit from one image to another.

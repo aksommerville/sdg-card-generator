@@ -17,6 +17,9 @@
 #
 # image PATH X Y W H [ROTATION]
 #
+# rect X Y W H COLOR
+# line AX AY BX BY COLOR
+#
 # save_hint (small|medium|fast)
 # save PATH
 #
@@ -26,6 +29,9 @@ save_hint medium
 
 load "tsv.tsv"
 background "bg.png"
+
+rect 11 75 238 318 804000ff
+line 248 395 11 788 000000ff
 
 font "Comic Sans MS Bold" 80
 labelfmt "{NAME}" 80 400 ffffff80 CENTER 270

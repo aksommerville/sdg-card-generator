@@ -286,6 +286,26 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
     }
     return 0;
   }
+
+  CMD("rect",5) {
+    IARG(1,0,INT_MAX)
+    IARG(2,0,INT_MAX)
+    IARG(3,0,INT_MAX)
+    IARG(4,0,INT_MAX)
+    COLORARG(5)
+    if (imgtl_deck_draw_rect(tokenv[1].n,tokenv[2].n,tokenv[3].n,tokenv[4].n,tokenv[5].n)<0) return -1;
+    return 0;
+  }
+
+  CMD("line",5) {
+    IARG(1,0,INT_MAX)
+    IARG(2,0,INT_MAX)
+    IARG(3,0,INT_MAX)
+    IARG(4,0,INT_MAX)
+    COLORARG(5)
+    if (imgtl_deck_draw_line(tokenv[1].n,tokenv[2].n,tokenv[3].n,tokenv[4].n,tokenv[5].n)<0) return -1;
+    return 0;
+  }
   
   CMD("save",1) {
     SARG(1)

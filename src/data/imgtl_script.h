@@ -67,6 +67,14 @@
  *     Use (0,0) for boundary size to disable clipping.
  *     ROTATION is one of (0,90,180,270), 0 if unset.
  *
+ *   rect X Y W H COLOR
+ *     imgtl_deck_draw_rect()
+ *     Draw a solid rectangle on every card.
+ *
+ *   line AX AY BX BY COLOR
+ *     imgtl_deck_draw_line()
+ *     Draw a single-pixel line on every card.
+ *
  *   save PATH
  *     imgtl_deck_save_images()
  *     Save all cards as PNG files under the named directory.

@@ -446,6 +446,35 @@ int imgtl_deck_add_formatted_text(const char *src,int srcc,int x,int y,int w,int
   return 0;
 }
 
+/* Simple drawing.
+ */
+ 
+int imgtl_deck_draw_rect(int x,int y,int w,int h,uint32_t rgba) {
+  int colorfield=-1; if ((rgba&0x00ffffff)==0x00fe0100) colorfield=(rgba>>24)&0xff;
+  int i; for (i=0;i<imgtl_deck.cardc;i++) {
+    struct imgtl_card *card=imgtl_deck.cardv+i;
+    if (colorfield>=0) {
+      rgba=imgtl_deck.defaultcolor;
+      if (colorfield<card->valuec) imgtl_rgba_eval((int*)&rgba,card->valuev[colorfield].v,card->valuev[colorfield].c);
+    }
+    if (imgtl_draw_rect(card->image,x,y,w,h,rgba)<0) return -1;
+  }
+  return 0;
+}
+
+int imgtl_deck_draw_line(int ax,int ay,int bx,int by,uint32_t rgba) {
+  int colorfield=-1; if ((rgba&0x00ffffff)==0x00fe0100) colorfield=(rgba>>24)&0xff;
+  int i; for (i=0;i<imgtl_deck.cardc;i++) {
+    struct imgtl_card *card=imgtl_deck.cardv+i;
+    if (colorfield>=0) {
+      rgba=imgtl_deck.defaultcolor;
+      if (colorfield<card->valuec) imgtl_rgba_eval((int*)&rgba,card->valuev[colorfield].v,card->valuev[colorfield].c);
+    }
+    if (imgtl_draw_line(card->image,ax,ay,bx,by,rgba)<0) return -1;
+  }
+  return 0;
+}
+
 /* Add image.
  */
 
