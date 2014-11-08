@@ -6,6 +6,7 @@
 #include "imgtl_deck.h"
 #include <sys/stat.h>
 #include <errno.h>
+#include <unistd.h>
 
 /* Globals.
  */
@@ -28,6 +29,7 @@ static struct {
   struct imgtl_card *cardv; int cardc,carda;
   struct imgtl_image *bgimg;
   uint32_t defaultcolor;
+  char *defaultpath;
 } imgtl_deck={0};
 
 /* Minor types.
@@ -65,6 +67,7 @@ void imgtl_deck_quit() {
     free(imgtl_deck.cardv);
   }
   imgtl_image_del(imgtl_deck.bgimg);
+  if (imgtl_deck.defaultpath) free(imgtl_deck.defaultpath);
   memset(&imgtl_deck,0,sizeof(imgtl_deck));
 }
 
@@ -72,6 +75,38 @@ void imgtl_deck_unload() {
   while (imgtl_deck.headerc>0) imgtl_header_cleanup(imgtl_deck.headerv+(--(imgtl_deck.headerc)));
   while (imgtl_deck.cardc>0) imgtl_card_cleanup(imgtl_deck.cardv+(--(imgtl_deck.cardc)));
   imgtl_image_del(imgtl_deck.bgimg); imgtl_deck.bgimg=0;
+  imgtl_deck.defaultcolor=0;
+  // Keep defaultpath.
+}
+
+/* Set output path.
+ */
+ 
+int imgtl_deck_set_default_output_path(const char *path) {
+  char *nv=0;
+  if (!path||!path[0]) ;
+  else if (path[0]=='/') {
+    if (!(nv=strdup(path))) return -1;
+  } else {
+    char *wd=getcwd(0,0);
+    if (!wd) return -1;
+    int wdc=0; while (wd[wdc]) wdc++;
+    int pathc=0; while (path[pathc]) pathc++;
+    if (wdc>=INT_MAX-1-pathc) { free(wd); return -1; }
+    if (!(nv=malloc(wdc+1+pathc+1))) { free(wd); return -1; }
+    memcpy(nv,wd,wdc);
+    if (wd[wdc-1]!='/') nv[wdc++]='/';
+    memcpy(nv+wdc,path,pathc);
+    nv[wdc+pathc]=0;
+    free(wd);
+  }
+  if (imgtl_deck.defaultpath) free(imgtl_deck.defaultpath);
+  imgtl_deck.defaultpath=nv;
+  return 0;
+}
+
+const char *imgtl_deck_get_default_output_path() {
+  return imgtl_deck.defaultpath;
 }
 
 /* Add card from TSV data.

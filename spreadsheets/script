@@ -21,7 +21,8 @@
 # line AX AY BX BY COLOR
 #
 # save_hint (small|medium|fast)
-# save PATH
+# save [PATH]
+#   PATH not necessary if you run with '-oPATH'.
 #
 #------------------------------------------------------------------------------
 
@@ -47,4 +48,4 @@ labelfmt "{SCRAP VALUE}" 240 100 000000 RIGHT
 labelfmt "{NEEDED TO COMPLETE}" 240 125 000000 RIGHT
 textfmt "{EXTRA TEXT}" 10 394 480 396 808080
 
-save "../output"
+save

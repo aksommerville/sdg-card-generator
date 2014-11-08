@@ -307,8 +307,16 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
     return 0;
   }
   
-  CMD("save",1) {
-    SARG(1)
+  CMDMULTI("save",0,1) {
+    const char *defpath=imgtl_deck_get_default_output_path();
+    if (defpath&&defpath[0]) { // If a '-o' argument was provided, it overrides all.
+      tokenv[1].v=defpath;
+    } else if (tokenc>=2) { // If a path is named in the script, use it.
+      SARG(1)
+    } else { // No path!
+      fprintf(stderr,"%s:%d:ERROR: Output path not provided. Please name it in this file, or run with '-oPATH'.\n",refname,lineno);
+      return -2;
+    }
     if (imgtl_deck_save_images(tokenv[1].v)<0) {
       fprintf(stderr,"%s:%d:ERROR: Save to '%s' failed: %s\n",refname,lineno,tokenv[1].v,strerror(errno));
       return -2;

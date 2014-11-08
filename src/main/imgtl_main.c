@@ -10,17 +10,25 @@
 #include <errno.h>
 #include <dirent.h>
 
+#ifndef IMGTL_VERSION_NUMBER
+  #define IMGTL_VERSION_NUMBER "<nonstandard>"
+#endif
+
 /* --help and --version
  */
 
 static void imgtl_print_help(const char *name) {
   printf(
-    "Usage: %s [SCRIPTS...]\n"
+    "Usage: %s [OPTIONS|SCRIPTS...]\n"
+    "OPTIONS:\n"
+    "  --help       Print this message.\n"
+    "  --version    Print version number.\n"
+    "  -oPATH       Set default output path for subsequent scripts.\n"
   ,name);
 }
 
 static void imgtl_print_version() {
-  printf("imgtl 20141107\n");
+  printf("imgtl "IMGTL_VERSION_NUMBER"\n");
 }
 
 /* Guess path to script based on executable.
@@ -88,6 +96,7 @@ int main(int argc,char **argv,char **envv) {
     const char *arg=argv[i++];
     if (!strcmp(arg,"--help")) imgtl_print_help(argv[0]);
     else if (!strcmp(arg,"--version")) imgtl_print_version();
+    else if ((arg[0]=='-')&&(arg[1]=='o')) imgtl_deck_set_default_output_path(arg+2);
     else if (arg[0]=='-') { fprintf(stderr,"Unexpected argument '%s'.\n",arg); return 1; }
     else {
       char *src=0;
@@ -114,12 +123,9 @@ int main(int argc,char **argv,char **envv) {
       }
       if (wd) chdir(wd);
       free(src);
+      imgtl_deck_unload();
     }
   }
-
-  //imgtl_image_save_hint=IMGTL_IMAGE_SAVE_HINT_DEFAULT; // 618230 B in 3.164 s
-  //imgtl_image_save_hint=IMGTL_IMAGE_SAVE_HINT_FASTER; // 680506 B in 0.824 s
-  //imgtl_image_save_hint=IMGTL_IMAGE_SAVE_HINT_MUCH_FASTER; // 24,020860 B in 0.224 s
 
   imgtl_text_quit();
   imgtl_deck_quit();

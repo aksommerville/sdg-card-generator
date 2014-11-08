@@ -75,7 +75,7 @@
  *     imgtl_deck_draw_line()
  *     Draw a single-pixel line on every card.
  *
- *   save PATH
+ *   save [PATH]
  *     imgtl_deck_save_images()
  *     Save all cards as PNG files under the named directory.
  *

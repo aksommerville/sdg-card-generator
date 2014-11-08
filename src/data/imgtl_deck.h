@@ -7,6 +7,9 @@
 void imgtl_deck_quit();
 void imgtl_deck_unload();
 
+int imgtl_deck_set_default_output_path(const char *path);
+const char *imgtl_deck_get_default_output_path();
+
 /* Replace the current deck with a new spreadsheet.
  * (path) refers to a TSV file: Columns separated by HT, then rows separated by LF.
  * The first row are captions and any empty row is ignored. All other rows are one card each.
