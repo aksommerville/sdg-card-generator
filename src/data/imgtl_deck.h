@@ -20,6 +20,7 @@ int imgtl_deck_load(const char *path);
  * This does not replace the individual cards' images.
  */
 int imgtl_deck_load_background_image(const char *path);
+int imgtl_deck_set_blank_background_image(int w,int h);
 
 /* The field count here is the count of titled fields, which may include gaps between.
  */

@@ -1,0 +1,8 @@
+load cards.tsv
+blank 200 200
+rect 0 0 200 200 ffffff
+font "Comic Sans MS" 36
+labelfmt "FUN FACT" 30 100 c0c0c0 CENTER 270
+font PTMono 12
+textfmt "{NAME} joysticks have {BTNC} buttons and {STICKC} sticks." 0 0 200 200 000000
+save

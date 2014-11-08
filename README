@@ -1,0 +1,19 @@
+imgtl
+Scripted image composition tool for card games.
+8 November 2014
+Andy Sommerville: a k sommerville at g mail dot com
+
+See directory 'example' for a example of expected use patterns.
+It contains a shell script 'rebuild-all.sh' which can run from terminal or Mac GUI.
+(Platforms other than Mac, you should delete the last line of that script).
+On a successful run, it creates 'output' directories in each of the subdirectories, containing the card images.
+
+Each subdirectory contains card data in 'cards.tsv' and the master script in 'script'.
+'tsv' files contain rows separated by newline (LF) and columns separated by tab (HT).
+The first row are captions, each subsequent non-empty row is a card.
+
+Where a script refers to files, the path may be absolute (beginning with slash) or relative to the script's directory.
+When referring to a font, you may also use short names and we search likely places.
+eg you can ask for "Arial" instead of "/Library/Fonts/Arial.ttf".
+
+The canonical documentation for script syntax is in the source: src/data/imgtl_script.h

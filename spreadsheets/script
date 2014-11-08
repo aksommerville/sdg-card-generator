@@ -3,6 +3,8 @@
 # load PATH
 #
 # background PATH
+# blank W H
+#   Script should begin with one or the other of these.
 #
 # defaultcolor COLOR
 # font PATH SIZE
@@ -38,6 +40,8 @@ font "Comic Sans MS Bold" 80
 labelfmt "{NAME}" 80 400 ffffff80 CENTER 270
 
 image "Equipment/{Name}.png" 250 74 240 320
+
+labelfmt “HELLO WORLD” 400 40 000000ff LEFT 90
 
 font "Papyrus" 48
 defaultcolor ffffff

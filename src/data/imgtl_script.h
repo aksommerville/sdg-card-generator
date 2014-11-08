@@ -3,6 +3,7 @@
  * It coordinates access to the deck, essentially exporting the API in <imgtl_deck.h>.
  *
  * Scripts generally are line-oriented text.
+ * LF and CR both break lines, and any byte 0x20 or lower is space.
  * Hash begins a line comment.
  * Tokens are separated by whitespace; first token is the command.
  * A quoted string is also a discrete token, even with whitespace inside.
@@ -28,6 +29,10 @@
  *     imgtl_deck_load_background_image(), imgtl_deck_begin_rendering()
  *     Load PNG file for each card's background (front face).
  *     This must come before any rendering commands.
+ *
+ *   blank W H
+ *     imgtl_deck_set_blank_background_image(),imgtl_deck_begin_rendering()
+ *     Similar to 'background', but generate a blank image of the requested size.
  *
  *   defaultcolor COLOR
  *     imgtl_deck_default_color()

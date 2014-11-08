@@ -79,6 +79,17 @@ int imgtl_utf8_encode(char *dst,int dsta,int src) {
 int imgtl_str_measure(const char *src,int srcc) {
   if (!src) return 0;
   if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
+
+  // Smartass quotes. We don't allow long UTF-8 sequences in text, but we do permit these quote chars.
+  if ((srcc>=3)&&!memcmp(src,"\xe2\x80\x9c",3)) {
+    int srcp=3; 
+    while (1) {
+      if (srcp>srcc-3) return 0;
+      if (!memcmp(src+srcp,"\xe2\x80\x9d",3)) return srcp+3;
+      srcp++;
+    }
+  }
+  
   if (srcc<2) return 0;
   if ((src[0]!='"')&&(src[0]!='\'')) return 0;
   int srcp=1;
@@ -97,8 +108,11 @@ int imgtl_str_eval(char *dst,int dsta,const char *src,int srcc) {
   if (!dst||(dsta<0)) dsta=0;
   if (!src) return -1;
   if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
-  if ((srcc<2)||(src[0]!=src[srcc-1])||((src[0]!='"')&&(src[0]!='\''))) return -1;
-  src++; srcc-=2;
+  if ((srcc>=2)&&((src[0]=='"')||(src[0]=='\''))&&(src[0]==src[srcc-1])) {
+    src++; srcc-=2;
+  } else if ((srcc>=6)&&!memcmp(src,"\xe2\x80\x9c",3)&&!memcmp(src+srcc-3,"\xe2\x80\x9d",3)) {
+    src+=3; srcc-=6;
+  } else return -1;
   int dstc=0,srcp=0;
   while (srcp<srcc) {
     if (src[srcp]=='\\') {

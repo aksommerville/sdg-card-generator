@@ -1,0 +1,9 @@
+load cards.tsv
+blank 200 200
+rect 0 0 200 200 ffffff
+rect 0 0 40 200 ff8000
+font "Courier New Bold" 36
+labelfmt "{NAME}" 30 100 ffffff CENTER 270
+font Arial 18
+textfmt "{NAME} goes on the {POSITION} of the plate and is used to {ACTION}." 40 0 160 200 000000
+save

@@ -234,6 +234,16 @@ int imgtl_deck_load_background_image(const char *path) {
   return 0;
 }
 
+int imgtl_deck_set_blank_background_image(int w,int h) {
+  struct imgtl_image *image=0;
+  if (w||h) {
+    if (!(image=imgtl_image_new_alloc(w,h,IMGTL_FMT_RGB))) return -1;
+  }
+  imgtl_image_del(imgtl_deck.bgimg);
+  imgtl_deck.bgimg=image;
+  return 0;
+}
+
 /* Card accessors.
  */
 
@@ -622,6 +632,10 @@ int imgtl_deck_save_images(const char *path) {
   }
   int i; for (i=0;i<imgtl_deck.cardc;i++) {
     struct imgtl_card *card=imgtl_deck.cardv+i;
+    if (!card->image) {
+      fprintf(stderr,"%s:ERROR: Card images not yet created!\n",path);
+      return -2;
+    }
     char subpath[1024];
     int subpathc=snprintf(subpath,sizeof(subpath),"%s/%03d-FRONT.png",path,i+1);
     if ((subpathc<1)||(subpathc>=sizeof(subpath))) return -1;

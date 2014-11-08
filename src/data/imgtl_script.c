@@ -27,7 +27,7 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
       return -2;
     }
     tokenv[tokenc].v=src+srcp;
-    if ((src[srcp]=='"')||(src[srcp]=='\'')) {
+    if ((src[srcp]=='"')||(src[srcp]=='\'')||((srcp<=srcc-3)&&!memcmp(src+srcp,"\xe2\x80\x9c",3))) {
       if ((tokenv[tokenc].c=imgtl_str_measure(src+srcp,srcc-srcp))<1) {
         fprintf(stderr,"%s:%d:ERROR: Unclosed quote.\n",refname,lineno);
         return -2;
@@ -62,7 +62,7 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
   // This copies all strings, to ensure termination.
   #define SARG(tokenp) \
     if (tokenp>=tokenc) return -1; \
-    if ((tokenv[tokenp].v[0]=='"')||(tokenv[tokenp].v[0]=='\'')) { \
+    if ((tokenv[tokenp].v[0]=='"')||(tokenv[tokenp].v[0]=='\'')||((tokenv[tokenp].c>=3)&&!memcmp(tokenv[tokenp].v,"\xe2\x80\x9c",3))) { \
       int add=imgtl_str_eval(sbuf+sbufc,sizeof(sbuf)-sbufc,tokenv[tokenp].v,tokenv[tokenp].c); \
       if (add<0) { fprintf(stderr,"%s:%d:ERROR: Failed to parse string token.\n",refname,lineno); return -2; } \
       if (sbufc>=sizeof(sbuf)-add) { fprintf(stderr,"%s:%d:ERROR: Too much text.\n",refname,lineno); return -2; } \
@@ -155,6 +155,14 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
     return 0;
   }
 
+  CMD("blank",2) {
+    IARG(1,1,2048)
+    IARG(2,1,2048)
+    if (imgtl_deck_set_blank_background_image(tokenv[1].n,tokenv[2].n)<0) return -1;
+    if (imgtl_deck_begin_rendering()<0) return -1;
+    return 0;
+  }
+
   CMD("defaultcolor",1) {
     COLORARG(1)
     if ((tokenv[1].n&0x00ffffff)==0x00fe0100) {
@@ -166,7 +174,6 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
   }
   
   CMD("label",5) {
-    //TODO static text, same on every card
     SARG(1)
     IARG(2,0,INT_MAX)
     IARG(3,0,INT_MAX)

@@ -1,0 +1,9 @@
+load cards.tsv
+blank 200 200
+rect 0 0 200 200 ffffff
+rect 0 0 200 40 808080
+font "Courier New Bold" 36
+labelfmt "{NAME}" 100 30 ffffff CENTER
+font Arial 12
+textfmt "The lovely marsupial called {NAME} is found exclusively in the faraway land of {LOCATION}." 0 40 200 160 000000
+save
