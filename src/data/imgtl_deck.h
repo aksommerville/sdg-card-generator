@@ -65,7 +65,7 @@ int imgtl_deck_add_text(int fieldid,int x,int y,int w,int h,uint32_t rgba);
  * If so, there can only be one field insertion, and images are considered optional.
  * If the image exists, it is drawn centered and clipped in the stated rectangle.
  */
-int imgtl_deck_add_image(const char *path,int pathc,int x,int y,int w,int h);
+int imgtl_deck_add_image(const char *path,int pathc,int x,int y,int w,int h,int rotation);
 
 /* Create the directory named by (path), and into it, save an image file for each card.
  */

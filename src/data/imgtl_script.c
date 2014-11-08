@@ -51,6 +51,13 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
         fprintf(stderr,"%s:%d:ERROR: Command '%.*s' expects %d arguments, have %d.\n",refname,lineno,tokenv[0].c,tokenv[0].v,argc,tokenc-1); \
         return -2; \
       } else
+      
+  #define CMDMULTI(kw,argclo,argchi) \
+    if ((tokenv[0].c==sizeof(kw)-1)&&!imgtl_memcasecmp(tokenv[0].v,kw,sizeof(kw)-1)) \
+      if ((tokenc-1<argclo)||(tokenc-1>argchi)) { \
+        fprintf(stderr,"%s:%d:ERROR: Command '%.*s' expects %d..%d arguments, have %d.\n",refname,lineno,tokenv[0].c,tokenv[0].v,argclo,argchi,tokenc-1); \
+        return -2; \
+      } else
 
   // This copies all strings, to ensure termination.
   #define SARG(tokenp) \
@@ -223,13 +230,20 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
     return 0;
   }
   
-  CMD("image",5) {
+  CMDMULTI("image",5,6) {
     SARG(1)
     IARG(2,0,INT_MAX)
     IARG(3,0,INT_MAX)
     IARG(4,0,INT_MAX)
     IARG(5,0,INT_MAX)
-    if (imgtl_deck_add_image(tokenv[1].v,tokenv[1].c,tokenv[2].n,tokenv[3].n,tokenv[4].n,tokenv[5].n)<0) {
+    if (tokenc>=7) { 
+      IARG(6,0,270) 
+      switch (tokenv[6].n) {
+        case 0: case 90: case 180: case 270: break;
+        default: fprintf(stderr,"%s:%d:ERROR: Rotation must be one of (0,90,180,270). Have %d.\n",refname,lineno,tokenv[6].n);
+      }
+    } else tokenv[6].n=0;
+    if (imgtl_deck_add_image(tokenv[1].v,tokenv[1].c,tokenv[2].n,tokenv[3].n,tokenv[4].n,tokenv[5].n,tokenv[6].n)<0) {
       fprintf(stderr,"%s:%d:ERROR: Failed to add image '%.*s'.\n",refname,lineno,tokenv[1].c,tokenv[1].v);
       return -2;
     }
@@ -246,6 +260,7 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
   }
   
   #undef CMD
+  #undef CMDMULTI
   #undef SARG
   #undef IARG
   #undef COLORARG

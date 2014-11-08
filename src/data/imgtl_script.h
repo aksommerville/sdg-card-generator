@@ -52,12 +52,13 @@
  *     A sensible margin is automatically applied.
  *     At this time, the box's bottom edge is not respected.
  *
- *   image PATH X Y W H
+ *   image PATH X Y W H [ROTATION]
  *     imgtl_deck_add_image()
  *     Load a PNG file and draw it on to every card.
  *     If PATH contains a field name in curly braces, the content of that field is substituted per card.
  *     Image is centered and clipped to provided boundary.
  *     Use (0,0) for boundary size to disable clipping.
+ *     ROTATION is one of (0,90,180,270), 0 if unset.
  *
  *   save PATH
  *     imgtl_deck_save_images()

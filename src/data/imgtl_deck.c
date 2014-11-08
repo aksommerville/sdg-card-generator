@@ -364,19 +364,17 @@ static int imgtl_deck_add_image_1(struct imgtl_image *dst,int x,int y,int w,int 
   } else {
     if (w<src->w) {
       int adj=(src->w-w)>>1;
-      x+=adj;
       srcx+=adj;
     } else if (w>src->w) x=x+(w>>1)-(src->w>>1);
     if (h<src->h) {
       int adj=(src->h-h)>>1;
-      y+=adj;
       srcy+=adj;
     } else if (h>src->h) y=y+(h>>1)-(src->h>>1);
   }
   return imgtl_draw_image(dst,x,y,src,srcx,srcy,w,h);
 }
  
-int imgtl_deck_add_image(const char *path,int pathc,int x,int y,int w,int h) {
+int imgtl_deck_add_image(const char *path,int pathc,int x,int y,int w,int h,int rotation) {
 
   // Parse and validate path.
   if (!path) return -1;
@@ -401,6 +399,16 @@ int imgtl_deck_add_image(const char *path,int pathc,int x,int y,int w,int h) {
   }
   if (fldname&&!sfx) return -1;
 
+  // Validate rotation.
+  int xform;
+  switch (rotation) {
+    case 0: xform=IMGTL_XFORM_NONE; break;
+    case 90: xform=IMGTL_XFORM_CLOCK; break;
+    case 180: xform=IMGTL_XFORM_180; break;
+    case 270: xform=IMGTL_XFORM_COUNTER; break;
+    default: return -1;
+  }
+
   // Insert field content.
   if (fldname) {
     int fldp=imgtl_deck_lookup_field(fldname,fldnamec);
@@ -414,6 +422,12 @@ int imgtl_deck_add_image(const char *path,int pathc,int x,int y,int w,int h) {
       if ((subpathc<0)||(subpathc>=sizeof(subpath))) return -1;
       struct imgtl_image *src=imgtl_image_load_file(subpath);
       if (!src) continue;
+      if (rotation) {
+        struct imgtl_image *rimg=imgtl_xform(src,xform);
+        if (!rimg) return -1;
+        imgtl_image_del(src);
+        src=rimg;
+      }
       imgtl_deck_add_image_1(card->image,x,y,w,h,src);
       imgtl_image_del(src);
     }
@@ -422,6 +436,12 @@ int imgtl_deck_add_image(const char *path,int pathc,int x,int y,int w,int h) {
   } else {
     struct imgtl_image *src=imgtl_image_load_file(path);
     if (!src) return -1;
+    if (rotation) {
+      struct imgtl_image *rimg=imgtl_xform(src,xform);
+      if (!rimg) return -1;
+      imgtl_image_del(src);
+      src=rimg;
+    }
     int i; for (i=0;i<imgtl_deck.cardc;i++) {
       struct imgtl_card *card=imgtl_deck.cardv+i;
       imgtl_deck_add_image_1(card->image,x,y,w,h,src);

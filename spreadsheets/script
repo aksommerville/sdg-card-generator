@@ -7,12 +7,12 @@
 # labelup FIELD X Y ALIGN COLOR
 # labeldown FIELD X Y ALIGN COLOR
 # text FIELD X Y W H COLOR
-# image PATH X Y W H
+# image PATH X Y W H [ROTATION]
 # save PATH
 
 save_hint medium
 
-load "tsv.tsv" "Go awry at this point."
+load "tsv.tsv"
 background "bg.png"
 
 font "Comic Sans MS Bold" 80
