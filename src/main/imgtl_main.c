@@ -66,6 +66,9 @@ static int imgtl_guess_path(char *dst,int dsta,const char *src) {
 
 int main(int argc,char **argv,char **envv) {
 
+  // This is really cheesy: If launched with no arguments and an absolute path, assume we're launched from the GUI.
+  int launched_from_gui=(argc<1)||((argc==1)&&(argv[0][0]=='/'));
+
   char *wd=getcwd(0,0);
 
   char autopath[1024];
@@ -104,7 +107,11 @@ int main(int argc,char **argv,char **envv) {
         d[slashp]=0;
         chdir(d);
       }
-      if (imgtl_script_execute_text(src,srcc,arg)<0) return 1;
+      if (imgtl_script_execute_text(src,srcc,arg)<0) {
+        fprintf(stderr,"%s: Failed while processing script '%s'.\n",argv[0],arg);
+        if (launched_from_gui) { fprintf(stderr," [[ Press any key to quit. ]]\n"); uint8_t dummy; read(STDIN_FILENO,&dummy,1); }
+        return 1;
+      }
       if (wd) chdir(wd);
       free(src);
     }

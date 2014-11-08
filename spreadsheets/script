@@ -12,7 +12,7 @@
 
 save_hint medium
 
-load "tsv.tsv"
+load "tsv.tsv" "Go awry at this point."
 background "bg.png"
 
 font "Comic Sans MS Bold" 80
