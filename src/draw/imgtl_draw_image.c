@@ -141,12 +141,13 @@ int imgtl_draw_a8(struct imgtl_image *image,int x,int y,const void *alpha,int sr
       } else {
         int srca=(*srci*a)>>8;
         if (!srca) continue;
-        int dsta=0xff-srca;
         rdpx(tmp,dsti);
-        tmp[0]=(tmp[0]*dsta+r*srca)>>8;
-        tmp[1]=(tmp[1]*dsta+g*srca)>>8;
-        tmp[2]=(tmp[2]*dsta+b*srca)>>8;
-        tmp[3]=0xff;
+        int dsta=tmp[3];
+        int asum=dsta+srca; if (asum>0xff) { asum=0xff; dsta=0xff-srca; }
+        tmp[0]=(tmp[0]*dsta+r*srca)/asum;
+        tmp[1]=(tmp[1]*dsta+g*srca)/asum;
+        tmp[2]=(tmp[2]*dsta+b*srca)/asum;
+        tmp[3]=asum;
         wrpx(dsti,tmp);
       }
     }

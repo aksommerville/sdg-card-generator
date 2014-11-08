@@ -61,6 +61,9 @@ int imgtl_deck_add_rlabel(int fieldid,int x,int y,int align,int rotation,uint32_
  */
 int imgtl_deck_add_text(int fieldid,int x,int y,int w,int h,uint32_t rgba);
 
+int imgtl_deck_add_formatted_label(const char *src,int srcc,int x,int y,uint32_t rgba,int align,int rotation);
+int imgtl_deck_add_formatted_text(const char *src,int srcc,int x,int y,int w,int h,uint32_t rgba,int rotation);
+
 /* (path) may contain a field name enclosed in curly braces.
  * If so, there can only be one field insertion, and images are considered optional.
  * If the image exists, it is drawn centered and clipped in the stated rectangle.

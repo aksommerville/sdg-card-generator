@@ -1,14 +1,26 @@
-# save_hint (small|medium|fast)
-# font PATH SIZE
+#------------------------------------------------------------------------------
+#
 # load PATH
+#
 # background PATH
+#
 # defaultcolor COLOR
-# label FIELD X Y ALIGN COLOR
-# labelup FIELD X Y ALIGN COLOR
-# labeldown FIELD X Y ALIGN COLOR
-# text FIELD X Y W H COLOR
+# font PATH SIZE
+#
+# [DEPRECATED] label FIELD X Y ALIGN COLOR
+# [DEPRECATED] labelup FIELD X Y ALIGN COLOR
+# [DEPRECATED] labeldown FIELD X Y ALIGN COLOR
+# [DEPRECATED] text FIELD X Y W H COLOR
+# labelfmt STRING X Y COLOR [ALIGN [ROTATION]]
+# textfmt STRING X Y W H COLOR [ROTATION]
+#   (labelfmt,textfmt) should be preferred to the others, they are more general.
+#
 # image PATH X Y W H [ROTATION]
+#
+# save_hint (small|medium|fast)
 # save PATH
+#
+#------------------------------------------------------------------------------
 
 save_hint medium
 
@@ -16,17 +28,17 @@ load "tsv.tsv"
 background "bg.png"
 
 font "Comic Sans MS Bold" 80
-labelup "Name" 80 400 CENTER ffffff80
+labelfmt "{NAME}" 80 400 ffffff80 CENTER 270
 
 image "Equipment/{Name}.png" 250 74 240 320
 
 font "Papyrus" 48
 defaultcolor ffffff
-label "Name" 250 57 CENTER "Title Color"
+labelfmt "{NAME}" 250 57 "Title Color" CENTER
 
 font "Vera" 24
-label "Needed to Complete" 240 100 RIGHT 000000
-label "Scrap Value" 240 125 RIGHT 000000
-text "Extra Text" 10 394 480 406 808080
+labelfmt "{SCRAP VALUE}" 240 100 000000 RIGHT
+labelfmt "{NEEDED TO COMPLETE}" 240 125 000000 RIGHT
+textfmt "{EXTRA TEXT}" 10 394 480 396 808080
 
 save "../output"

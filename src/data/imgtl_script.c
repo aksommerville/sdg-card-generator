@@ -229,6 +229,43 @@ int imgtl_script_execute_line(const char *src,int srcc,const char *refname,int l
     if (imgtl_deck_add_text(fieldid,tokenv[2].n,tokenv[3].n,tokenv[4].n,tokenv[5].n,tokenv[6].n)<0) return -1;
     return 0;
   }
+
+  CMDMULTI("labelfmt",4,6) {
+    SARG(1)
+    IARG(2,0,INT_MAX)
+    IARG(3,0,INT_MAX)
+    COLORARG(4)
+    if (tokenc>=6) {
+      ALIGNARG(5)
+      if (tokenc>=7) {
+        IARG(6,0,270)
+        switch (tokenv[6].n) {
+          case 0: case 90: case 180: case 270: break;
+          default: fprintf(stderr,"%s:%d:ERROR: Rotation must be one of (0,90,180,270). Have %d.\n",refname,lineno,tokenv[6].n); return -2;
+        }
+      } else tokenv[6].n=0;
+    } else tokenv[5].n=tokenv[6].n=0;
+    if (imgtl_deck_add_formatted_label(tokenv[1].v,tokenv[1].c,tokenv[2].n,tokenv[3].n,tokenv[4].n,tokenv[5].n,tokenv[6].n)<0) return -1;
+    return 0;
+  }
+
+  CMDMULTI("textfmt",6,7) {
+    SARG(1)
+    IARG(2,0,INT_MAX)
+    IARG(3,0,INT_MAX)
+    IARG(4,0,INT_MAX)
+    IARG(5,0,INT_MAX)
+    COLORARG(6)
+    if (tokenc>=8) {
+      IARG(7,0,270)
+      switch (tokenv[7].n) {
+        case 0: case 90: case 180: case 270: break;
+        default: fprintf(stderr,"%s:%d:ERROR: Rotation must be one of (0,90,180,270). Have %d.\n",refname,lineno,tokenv[7].n); return -2;
+      }
+    } else tokenv[7].n=0;
+    if (imgtl_deck_add_formatted_text(tokenv[1].v,tokenv[1].c,tokenv[2].n,tokenv[3].n,tokenv[4].n,tokenv[5].n,tokenv[6].n,tokenv[7].n)<0) return -1;
+    return 0;
+  }
   
   CMDMULTI("image",5,6) {
     SARG(1)

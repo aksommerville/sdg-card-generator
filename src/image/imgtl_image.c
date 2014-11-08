@@ -129,3 +129,14 @@ int imgtl_rgba_from_pixel(uint32_t *rgba,const struct imgtl_image *image,const u
   *rgba=(dst[0]<<24)|(dst[1]<<16)|(dst[2]<<8)|dst[3];
   return 0;
 }
+
+/* Clear image.
+ */
+
+int imgtl_image_clear(struct imgtl_image *image) {
+  if (!image) return -1;
+  char *pixels=image->pixels;
+  int w=image->w*image->pixelsize;
+  int i; for (i=0;i<image->h;i++,pixels+=image->stride) memset(pixels,0,w);
+  return 0;
+}

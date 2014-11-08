@@ -350,6 +350,102 @@ int imgtl_deck_add_text(int fieldid,int x,int y,int w,int h,uint32_t rgba) {
   return 0;
 }
 
+/* Copy format text.
+ */
+
+static int imgtl_card_format_text(char *dst,int dsta,const char *src,int srcc,const struct imgtl_card *card) {
+  if (!dst||(dsta<0)) dsta=0;
+  int dstc=0,srcp=0;
+  while (srcp<srcc) {
+    if (src[srcp]=='{') {
+      srcp++;
+      const char *fldname=src+srcp;
+      int fldnamec=0;
+      while ((srcp<srcc)&&(src[srcp++]!='}')) fldnamec++;
+      int fieldid=imgtl_deck_lookup_field(fldname,fldnamec);
+      if ((fieldid>=0)&&(fieldid<card->valuec)) {
+        if (dstc<=dsta-card->valuev[fieldid].c) memcpy(dst+dstc,card->valuev[fieldid].v,card->valuev[fieldid].c);
+        dstc+=card->valuev[fieldid].c;
+      }
+    } else {
+      int cpc=1; while ((srcp+cpc<srcc)&&(src[srcp+cpc]!='{')) cpc++;
+      if (dstc<=dsta-cpc) memcpy(dst+dstc,src+srcp,cpc);
+      dstc+=cpc;
+      srcp+=cpc;
+    }
+  }
+  if (dstc<dsta) dst[dstc]=0;
+  return dstc;
+}
+
+/* Text with all the bells and whistles.
+ */
+ 
+int imgtl_deck_add_formatted_label(const char *src,int srcc,int x,int y,uint32_t rgba,int align,int rotation) {
+  if (!src) return 0;
+  if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
+  int colorfield=-1; if ((rgba&0x00ffffff)==0x00fe0100) colorfield=(rgba>>24)&0xff;
+  char buf[1024];
+  int i; for (i=0;i<imgtl_deck.cardc;i++) {
+    struct imgtl_card *card=imgtl_deck.cardv+i;
+    if (colorfield>=0) {
+      rgba=imgtl_deck.defaultcolor;
+      if (colorfield<card->valuec) imgtl_rgba_eval((int*)&rgba,card->valuev[colorfield].v,card->valuev[colorfield].c);
+    }
+    int bufc=imgtl_card_format_text(buf,sizeof(buf),src,srcc,card);
+    if ((bufc>0)&&(bufc<=sizeof(buf))) {
+      if (imgtl_draw_rotated_text(card->image,x,y,align,buf,bufc,rgba,rotation)<0) return -1;
+    }
+  }
+  return 0;
+}
+
+int imgtl_deck_add_formatted_text(const char *src,int srcc,int x,int y,int w,int h,uint32_t rgba,int rotation) {
+  if (!src) return 0;
+  if (srcc<0) { srcc=0; while (src[srcc]) srcc++; }
+  
+  //TODO Margins?
+  x+=5; w-=10;
+  y+=5; h-=10;
+
+  int colorfield=-1; if ((rgba&0x00ffffff)==0x00fe0100) colorfield=(rgba>>24)&0xff;
+  char buf[1024];
+
+  struct imgtl_image *subimg=0;
+  int subw,subh,xform;
+  switch (rotation) {
+    case 0: subw=w; subh=h; xform=IMGTL_XFORM_NONE; break;
+    case 90: subw=h; subh=w; xform=IMGTL_XFORM_CLOCK; break;
+    case 180: subw=w; subh=h; xform=IMGTL_XFORM_180; break;
+    case 270: subw=h; subh=w; xform=IMGTL_XFORM_COUNTER; break;
+    default: return -1;
+  }
+  if (rotation&&!(subimg=imgtl_image_new_alloc(subw,subh,IMGTL_FMT_RGBA))) return -1;
+
+  int i; for (i=0;i<imgtl_deck.cardc;i++) {
+    struct imgtl_card *card=imgtl_deck.cardv+i;
+    if (colorfield>=0) {
+      rgba=imgtl_deck.defaultcolor;
+      if (colorfield<card->valuec) imgtl_rgba_eval((int*)&rgba,card->valuev[colorfield].v,card->valuev[colorfield].c);
+    }
+    int bufc=imgtl_card_format_text(buf,sizeof(buf),src,srcc,card);
+    if ((bufc>0)&&(bufc<=sizeof(buf))) {
+      if (rotation) {
+        if (imgtl_image_clear(subimg)<0) { imgtl_image_del(subimg); return -1; }
+        if (imgtl_draw_multiline_text(subimg,0,0,subimg->w,subimg->h,buf,bufc,rgba)<0) { imgtl_image_del(subimg); return -1; }
+        struct imgtl_image *tmp=imgtl_xform(subimg,xform); // Wouldn't need to do this if we had a 'copy-with-xform'. Is that worth the trouble?
+        if (!tmp) { imgtl_image_del(subimg); return -1; }
+        if (imgtl_draw_image(card->image,x,y,tmp,0,0,w,h)<0) { imgtl_image_del(subimg); imgtl_image_del(tmp); return -1; }
+        imgtl_image_del(tmp);
+      } else {
+        if (imgtl_draw_multiline_text(card->image,x,y,w,h,buf,bufc,rgba)<0) { imgtl_image_del(subimg); return -1; }
+      }
+    }
+  }
+  imgtl_image_del(subimg);
+  return 0;
+}
+
 /* Add image.
  */
 

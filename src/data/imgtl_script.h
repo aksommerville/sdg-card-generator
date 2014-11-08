@@ -52,6 +52,13 @@
  *     A sensible margin is automatically applied.
  *     At this time, the box's bottom edge is not respected.
  *
+ *   labelfmt STRING X Y COLOR [ALIGN [ROTATION]]
+ *   textfmt STRING X Y W H COLOR [ROTATION]
+ *     imgtl_deck_add_formatted_label()
+ *     imgtl_deck_add_formatted_text()
+ *     Same as (label,labelup,labeldown,text), but argument is plain text instead of a field name.
+ *     Any curly braces in text, we replace with the content of the named field.
+ *
  *   image PATH X Y W H [ROTATION]
  *     imgtl_deck_add_image()
  *     Load a PNG file and draw it on to every card.

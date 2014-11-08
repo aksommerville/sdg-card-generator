@@ -145,6 +145,9 @@ int imgtl_image_read_4bit(struct imgtl_image *image,const void *src,int normaliz
 int imgtl_pixel_from_rgba(uint8_t *pixel,const struct imgtl_image *image,uint32_t rgba);
 int imgtl_rgba_from_pixel(uint32_t *rgba,const struct imgtl_image *image,const uint8_t *pixel);
 
+// Zero all pixels.
+int imgtl_image_clear(struct imgtl_image *image);
+
 /* Encode and decode.
  */
 
